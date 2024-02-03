@@ -1,5 +1,6 @@
 package com.gamelectronics.updateofficeinfo.model;
 
+import com.gamelectronics.updateofficeinfo.utils.OfficeTypeEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import lombok.Data;
 public class Office {
 
     @Id
-    @Column(name = "office_code")
+    @Column(name = "office_code",unique = true)
     private String officeCode;
 
     @Column(name = "provider")
@@ -19,7 +20,8 @@ public class Office {
     private String officeName;
 
     @Column(name = "office_type")
-    private String officeType;
+    @Enumerated(EnumType.STRING)
+    private OfficeTypeEnum officeType;
 
     @Column(name = "manager_name")
     private String managerName;

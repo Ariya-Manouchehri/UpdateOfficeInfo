@@ -9,6 +9,7 @@ import com.gamelectronics.updateofficeinfo.mapper.UpdateAllOfficeFiledMapper;
 import com.gamelectronics.updateofficeinfo.mapper.UpdateFilledOfficeFiledMapper;
 import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.service.OfficeService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +35,7 @@ public class OfficeController {
     }
 
     @PostMapping
-    public RegisterOfficeResponse registerOffice(@RequestBody RegisterOfficeRequest registerOfficeRequest) {
+    public RegisterOfficeResponse registerOffice(@Valid @RequestBody RegisterOfficeRequest registerOfficeRequest) {
         RegisterOfficeResponse registerOfficeResponse = new RegisterOfficeResponse();
         ArrayList<Office> offices = new ArrayList<>(registerOfficeRequest.getOfficesDetail().size());
         offices.addAll(registerOfficeMapper.convertOfficeDetailToOffice(registerOfficeRequest.getOfficesDetail()));
@@ -44,14 +45,14 @@ public class OfficeController {
     }
 
     @PutMapping("/{officeCode}")
-    public void updateAllOfficeFiled(@PathVariable String officeCode, @RequestBody UpdateAllOfficeFiledRequest updateAllOfficeFiledRequest) {
+    public void updateAllOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateAllOfficeFiledRequest updateAllOfficeFiledRequest) {
         Office office = updateAllOfficeFiledMapper.convertUpdateAllOfficeFiledToOffice(updateAllOfficeFiledRequest);
         office.setOfficeCode(officeCode);
         officeService.updateAllOfficeFiled(office);
     }
 
     @PatchMapping("/{officeCode}")
-    public void updateFilledOfficeFiled(@PathVariable String officeCode, @RequestBody UpdateFilledOfficeFiledRequest updateFilledOfficeFiledRequest) throws InvocationTargetException, IllegalAccessException {
+    public void updateFilledOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateFilledOfficeFiledRequest updateFilledOfficeFiledRequest) throws InvocationTargetException, IllegalAccessException {
         Office office = updateFilledOfficeFiledMapper.convertUpdateFilledOfficeFiledToOffice(updateFilledOfficeFiledRequest);
         office.setOfficeCode(officeCode);
         officeService.updateFilledOfficeFiled(office);
