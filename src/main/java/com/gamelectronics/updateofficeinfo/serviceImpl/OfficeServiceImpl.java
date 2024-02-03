@@ -3,6 +3,7 @@ package com.gamelectronics.updateofficeinfo.serviceImpl;
 import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.repository.OfficeRepository;
 import com.gamelectronics.updateofficeinfo.service.OfficeService;
+import com.gamelectronics.updateofficeinfo.utils.MyBeanCopy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,25 @@ public class OfficeServiceImpl implements OfficeService {
 
     @Override
     public void updateAllOfficeFiled(Office office) {
-        officeRepository.save(office);
+        Office officeFinder = officeRepository.findByOfficeCode(office.getOfficeCode());
+        if (officeFinder != null) {
+            officeFinder = office;
+            officeRepository.save(officeFinder);
+        }
     }
 
     @Override
     public void updateFilledOfficeFiled(Office office) {
-        officeRepository.save(office);
+        Office officeFinder = officeRepository.findByOfficeCode(office.getOfficeCode());
+        if (officeFinder != null) {
+            MyBeanCopy myBeanCopy = new MyBeanCopy();
+            try {
+                myBeanCopy.copyProperties(officeFinder, office);
+            } catch (Exception e) {
+                System.out.println("error");
+            }
+            officeRepository.save(officeFinder);
+        }
     }
 
     @Override

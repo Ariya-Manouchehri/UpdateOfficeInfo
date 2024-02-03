@@ -11,6 +11,7 @@ import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.service.OfficeService;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 @RestController
@@ -44,18 +45,16 @@ public class OfficeController {
 
     @PutMapping("/{officeCode}")
     public void updateAllOfficeFiled(@PathVariable String officeCode, @RequestBody UpdateAllOfficeFiledRequest updateAllOfficeFiledRequest) {
-        Office office;
-        office = updateAllOfficeFiledMapper.convertUpdateAllOfficeFiledToOffice(updateAllOfficeFiledRequest);
+        Office office = updateAllOfficeFiledMapper.convertUpdateAllOfficeFiledToOffice(updateAllOfficeFiledRequest);
         office.setOfficeCode(officeCode);
         officeService.updateAllOfficeFiled(office);
     }
 
     @PatchMapping("/{officeCode}")
-    public void updateFilledOfficeFiled(@PathVariable String officeCode, @RequestBody UpdateFilledOfficeFiledRequest updateFilledOfficeFiledRequest) {
-        Office office;
-        office = updateFilledOfficeFiledMapper.convertUpdateFilledOfficeFiledToOffice(updateFilledOfficeFiledRequest);
+    public void updateFilledOfficeFiled(@PathVariable String officeCode, @RequestBody UpdateFilledOfficeFiledRequest updateFilledOfficeFiledRequest) throws InvocationTargetException, IllegalAccessException {
+        Office office = updateFilledOfficeFiledMapper.convertUpdateFilledOfficeFiledToOffice(updateFilledOfficeFiledRequest);
         office.setOfficeCode(officeCode);
-        officeService.updateAllOfficeFiled(office);
+        officeService.updateFilledOfficeFiled(office);
     }
 
     @GetMapping("/{officeCode}")

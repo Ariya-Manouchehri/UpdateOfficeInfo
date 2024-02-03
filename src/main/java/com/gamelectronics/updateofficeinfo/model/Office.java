@@ -9,7 +9,6 @@ import lombok.Data;
 public class Office {
 
     @Id
-    @GeneratedValue
     @Column(name = "office_code")
     private String officeCode;
 
