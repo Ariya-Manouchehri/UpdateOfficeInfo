@@ -1,5 +1,6 @@
 package com.gamelectronics.updateofficeinfo.dto;
 
+import com.gamelectronics.updateofficeinfo.utils.OfficeTypeEnum;
 import lombok.Data;
 
 @Data
@@ -8,7 +9,7 @@ public class UpdateFilledOfficeFiledRequest {
 
     private String officeName;
 
-    private String officeType;
+    private OfficeTypeEnum officeType;
 
     private String managerName;
 

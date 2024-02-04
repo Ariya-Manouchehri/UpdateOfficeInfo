@@ -10,7 +10,7 @@ import lombok.Data;
 public class Office {
 
     @Id
-    @Column(name = "office_code",unique = true)
+    @Column(name = "office_code", unique = true)
     private String officeCode;
 
     @Column(name = "provider")

@@ -1,5 +1,6 @@
 package com.gamelectronics.updateofficeinfo.dto;
 
+import com.gamelectronics.updateofficeinfo.utils.OfficeTypeEnum;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -11,12 +12,11 @@ public class UpdateAllOfficeFiledRequest {
     @Pattern(regexp = "modirsan")
     private String provider;
 
-
     @NotNull
     private String officeName;
 
     @NotNull
-    private String officeType;
+    private OfficeTypeEnum officeType;
 
     @NotNull
     private String managerName;
