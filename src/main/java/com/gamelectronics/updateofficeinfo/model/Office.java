@@ -3,10 +3,12 @@ package com.gamelectronics.updateofficeinfo.model;
 import com.gamelectronics.updateofficeinfo.utils.OfficeTypeEnum;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.envers.Audited;
 
 @Data
 @Entity
 @Table(name = "office")
+@Audited
 public class Office {
 
     @Id

@@ -6,6 +6,6 @@ import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OfficeRepository extends JpaRepository<Office,Long> {
+public interface OfficeRepository extends RevisionRepository<Office,String,Long>,JpaRepository<Office,String> {
     Office findByOfficeCode(String officeCode);
 }
