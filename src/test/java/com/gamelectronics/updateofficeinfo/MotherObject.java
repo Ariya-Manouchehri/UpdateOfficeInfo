@@ -105,20 +105,6 @@ public class MotherObject {
         return office;
     }
 
-    public static Office createForPutOfficeObject() {
-        Office office = new Office();
-
-        office.setProvider("modirsan");
-        office.setOfficeCode("113");
-        office.setOfficeType(OfficeTypeEnum.CORPORATION);
-        office.setManagerName("maryam");
-        office.setManagerNationalId("0023654787");
-        office.setManagerMobileNumber("09215960799");
-        office.setOfficeMobileNumber("09215960799");
-
-        return office;
-    }
-
     public static UpdateAllOfficeFiledRequest createUpdateAllOfficeFiledRequestObject() {
        UpdateAllOfficeFiledRequest updateAllOfficeFiledRequest = new UpdateAllOfficeFiledRequest();
 

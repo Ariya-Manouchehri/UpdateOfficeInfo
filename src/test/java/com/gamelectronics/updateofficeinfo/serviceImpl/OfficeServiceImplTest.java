@@ -1,6 +1,7 @@
 package com.gamelectronics.updateofficeinfo.serviceImpl;
 
 import com.gamelectronics.updateofficeinfo.MotherObject;
+import com.gamelectronics.updateofficeinfo.exception.NotFoundOfficeException;
 import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.repository.OfficeRepository;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,23 +37,22 @@ class OfficeServiceImplTest {
     }
 
     @Test
-    void given_valid_OfficeCode_when_officeRepository_call_save_then_return_changeDataBaseData() {
+    void given_valid_OfficeCode_when_officeRepository_call_save_then_return_changeDataBaseData() throws InvocationTargetException, IllegalAccessException {
         Mockito.when(officeRepository.findByOfficeCode(anyString())).thenReturn(MotherObject.createOfficeObject());
 
         officeService.updateAllOfficeFiled(MotherObject.createOfficeObject());
         officeService.updateNotNullOfficeFiled(MotherObject.createOfficeObject());
 
-        Mockito.verify(officeRepository,Mockito.times(1)).save(any());
+        Mockito.verify(officeRepository, Mockito.times(2)).save(any());
     }
 
     @Test
-    void given_invalid_OfficeCode_when_officeRepository_notCall_save_then_return_() {
+    void given_invalid_OfficeCode_when_officeRepository_notCall_save_then_return_notFoundException() throws InvocationTargetException, IllegalAccessException {
         Mockito.when(officeRepository.findByOfficeCode(anyString())).thenReturn(null);
+        Assertions.assertThrows(NotFoundOfficeException.class, () -> officeService.updateAllOfficeFiled(MotherObject.createOfficeObject()));
+        Assertions.assertThrows(NotFoundOfficeException.class, () -> officeService.updateNotNullOfficeFiled(MotherObject.createOfficeObject()));
 
-        officeService.updateAllOfficeFiled(MotherObject.createOfficeObject());
-        officeService.updateNotNullOfficeFiled(MotherObject.createOfficeObject());
-
-        Mockito.verify(officeRepository,Mockito.never()).save(any());
+        Mockito.verify(officeRepository, Mockito.never()).save(any());
     }
 
     @Test
@@ -60,12 +61,13 @@ class OfficeServiceImplTest {
 
         Office office = officeService.getOffice("123");
 
-        Assertions.assertEquals(MotherObject.createOfficeObject() , office);
+        Assertions.assertEquals(MotherObject.createOfficeObject(), office);
     }
+
     @Test
-    void given_invalid_officeCode_when_officeRepository_call_findByOfficeCode_then_return_() {
+    void given_invalid_officeCode_when_officeRepository_call_findByOfficeCode_then_return_notFoundException() {
         Mockito.when(officeRepository.findByOfficeCode(anyString())).thenReturn(null);
 
-        Office office = officeService.getOffice("123");
+        Assertions.assertThrows(NotFoundOfficeException.class, () -> officeService.getOffice("123"));
     }
 }
