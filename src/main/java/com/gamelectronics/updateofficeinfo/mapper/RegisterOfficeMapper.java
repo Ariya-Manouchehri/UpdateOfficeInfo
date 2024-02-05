@@ -9,5 +9,5 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface RegisterOfficeMapper {
 
-    List<Office> convertOfficeDetailToOffice(List<OfficesDetail> officesDetail);
+    List<Office> convertOfficeDetailsToOffices(List<OfficesDetail> officesDetail);
 }

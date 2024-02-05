@@ -1,10 +1,12 @@
 package com.gamelectronics.updateofficeinfo.dto;
 
 import com.gamelectronics.updateofficeinfo.utils.OfficeTypeEnum;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class UpdateFilledOfficeFiledRequest {
+public class UpdateNotNullOfficeFiledRequest {
+    @Pattern(regexp = "modirsan")
     private String provider;
 
     private String officeName;
@@ -13,6 +15,7 @@ public class UpdateFilledOfficeFiledRequest {
 
     private String managerName;
 
+    @Pattern(regexp = "\\d{10}")
     private String managerNationalId;
 
     private String managerMobileNumber;
@@ -29,6 +32,7 @@ public class UpdateFilledOfficeFiledRequest {
 
     private String officeAddress;
 
+    @Pattern(regexp = "^(\\d{10}|\\d{11})$")
     private String officePostalCode;
 
     private String officeStatus;

@@ -4,7 +4,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class MyBeanCopy extends BeanUtilsBean {
+public class OfficeBeanCopy extends BeanUtilsBean {
 
     @Override
     public void copyProperty(Object bean, String name, Object value) throws IllegalAccessException, InvocationTargetException {

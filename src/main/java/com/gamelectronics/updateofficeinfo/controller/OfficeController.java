@@ -3,10 +3,10 @@ package com.gamelectronics.updateofficeinfo.controller;
 import com.gamelectronics.updateofficeinfo.dto.RegisterOfficeRequest;
 import com.gamelectronics.updateofficeinfo.dto.RegisterOfficeResponse;
 import com.gamelectronics.updateofficeinfo.dto.UpdateAllOfficeFiledRequest;
-import com.gamelectronics.updateofficeinfo.dto.UpdateFilledOfficeFiledRequest;
+import com.gamelectronics.updateofficeinfo.dto.UpdateNotNullOfficeFiledRequest;
 import com.gamelectronics.updateofficeinfo.mapper.RegisterOfficeMapper;
 import com.gamelectronics.updateofficeinfo.mapper.UpdateAllOfficeFiledMapper;
-import com.gamelectronics.updateofficeinfo.mapper.UpdateFilledOfficeFiledMapper;
+import com.gamelectronics.updateofficeinfo.mapper.UpdateNotNullOfficeFiledMapper;
 import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.service.OfficeService;
 import jakarta.validation.Valid;
@@ -23,23 +23,25 @@ public class OfficeController {
     OfficeService officeService;
     RegisterOfficeMapper registerOfficeMapper;
     UpdateAllOfficeFiledMapper updateAllOfficeFiledMapper;
-    UpdateFilledOfficeFiledMapper updateFilledOfficeFiledMapper;
+    UpdateNotNullOfficeFiledMapper updateNotNullOfficeFiledMapper;
 
     public OfficeController(OfficeService officeService, RegisterOfficeMapper registerOfficeMapper,
                             UpdateAllOfficeFiledMapper updateAllOfficeFiledMapper,
-                            UpdateFilledOfficeFiledMapper updateFilledOfficeFiledMapper) {
+                            UpdateNotNullOfficeFiledMapper updateNotNullOfficeFiledMapper) {
         this.officeService = officeService;
         this.registerOfficeMapper = registerOfficeMapper;
         this.updateAllOfficeFiledMapper = updateAllOfficeFiledMapper;
-        this.updateFilledOfficeFiledMapper = updateFilledOfficeFiledMapper;
+        this.updateNotNullOfficeFiledMapper = updateNotNullOfficeFiledMapper;
     }
 
     @PostMapping
     public RegisterOfficeResponse registerOffice(@Valid @RequestBody RegisterOfficeRequest registerOfficeRequest) {
         RegisterOfficeResponse registerOfficeResponse = new RegisterOfficeResponse();
-        ArrayList<Office> offices = new ArrayList<>(registerOfficeRequest.getOfficesDetail().size());
-        offices.addAll(registerOfficeMapper.convertOfficeDetailToOffice(registerOfficeRequest.getOfficesDetail()));
+        ArrayList<Office> offices = new ArrayList<>(registerOfficeRequest.getOfficesDetails().size());
+
+        offices.addAll(registerOfficeMapper.convertOfficeDetailsToOffices(registerOfficeRequest.getOfficesDetails()));
         offices.forEach(office -> office.setProvider(registerOfficeRequest.getProvider()));
+
         registerOfficeResponse.setOfficesCount(officeService.registerOffice(offices).size());
         return registerOfficeResponse;
     }
@@ -48,14 +50,16 @@ public class OfficeController {
     public void updateAllOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateAllOfficeFiledRequest updateAllOfficeFiledRequest) {
         Office office = updateAllOfficeFiledMapper.convertUpdateAllOfficeFiledToOffice(updateAllOfficeFiledRequest);
         office.setOfficeCode(officeCode);
+
         officeService.updateAllOfficeFiled(office);
     }
 
     @PatchMapping("/{officeCode}")
-    public void updateFilledOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateFilledOfficeFiledRequest updateFilledOfficeFiledRequest) throws InvocationTargetException, IllegalAccessException {
-        Office office = updateFilledOfficeFiledMapper.convertUpdateFilledOfficeFiledToOffice(updateFilledOfficeFiledRequest);
+    public void updateNotNullOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateNotNullOfficeFiledRequest updateNotNullOfficeFiledRequest) throws InvocationTargetException, IllegalAccessException {
+        Office office = updateNotNullOfficeFiledMapper.convertUpdateNotNullOfficeFiledToOffice(updateNotNullOfficeFiledRequest);
         office.setOfficeCode(officeCode);
-        officeService.updateFilledOfficeFiled(office);
+
+        officeService.updateNotNullOfficeFiled(office);
     }
 
     @GetMapping("/{officeCode}")

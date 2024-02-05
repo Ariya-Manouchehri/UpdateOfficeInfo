@@ -18,5 +18,5 @@ public class RegisterOfficeRequest {
     @NotNull
     @NotEmpty
     @Valid
-    private List<OfficesDetail> officesDetail;
+    private List<OfficesDetail> officesDetails;
 }

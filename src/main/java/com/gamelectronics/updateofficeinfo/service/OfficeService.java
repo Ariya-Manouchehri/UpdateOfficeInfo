@@ -10,7 +10,7 @@ public interface OfficeService {
 
     void updateAllOfficeFiled(Office office);
 
-    void updateFilledOfficeFiled(Office office) throws InvocationTargetException, IllegalAccessException;
+    void updateNotNullOfficeFiled(Office office) throws InvocationTargetException, IllegalAccessException;
 
     Office getOffice(String officeCode);
 }

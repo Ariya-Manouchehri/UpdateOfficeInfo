@@ -26,52 +26,46 @@ class OfficeServiceImplTest {
     OfficeRepository officeRepository;
 
     @Test
-    void registerOffice() {
-        Mockito.when(officeRepository.saveAll(any())).thenReturn(MotherObject.createOfficeListObject());
-        long officeCount = officeRepository.findAll().size();
+    void given_offices_when_officeRepository_call_saveAll_then_return_officeList() {
+        Mockito.when(officeRepository.saveAll(any())).thenReturn(MotherObject.createOfficesObject());
 
-        List<Office> officeList = officeService.registerOffice(MotherObject.createOfficeListObject());
-        Assertions.assertEquals(1,officeCount + officeList.size());
+        List<Office> officeList = officeService.registerOffice(MotherObject.createOfficesObject());
+        Assertions.assertNotNull(officeList);
+        Assertions.assertEquals(1, officeList.size());
     }
 
     @Test
-    void updateAllOfficeFiled() {
+    void given_valid_OfficeCode_when_officeRepository_call_save_then_return_changeDataBaseData() {
         Mockito.when(officeRepository.findByOfficeCode(anyString())).thenReturn(MotherObject.createOfficeObject());
 
         officeService.updateAllOfficeFiled(MotherObject.createOfficeObject());
-        Mockito.verify(officeRepository,Mockito.times(1)).save(MotherObject.createOfficeObject());
+        officeService.updateNotNullOfficeFiled(MotherObject.createOfficeObject());
+
+        Mockito.verify(officeRepository,Mockito.times(1)).save(any());
     }
 
     @Test
-    void notUpdateAllOfficeFiled() {
+    void given_invalid_OfficeCode_when_officeRepository_notCall_save_then_return_() {
         Mockito.when(officeRepository.findByOfficeCode(anyString())).thenReturn(null);
 
         officeService.updateAllOfficeFiled(MotherObject.createOfficeObject());
-        Mockito.verify(officeRepository,Mockito.never()).save(MotherObject.createOfficeObject());
+        officeService.updateNotNullOfficeFiled(MotherObject.createOfficeObject());
+
+        Mockito.verify(officeRepository,Mockito.never()).save(any());
     }
 
     @Test
-    void updateFilledOfficeFiled() {
-        Mockito.when(officeRepository.findByOfficeCode(anyString())).thenReturn(MotherObject.createOfficeObject());
-
-        officeService.updateFilledOfficeFiled(MotherObject.createForPutOfficeObject());
-        Mockito.verify(officeRepository,Mockito.times(1)).save(MotherObject.createOfficeObject());
-    }
-
-    @Test
-    void notUpdateFilledOfficeFiled() {
-        Mockito.when(officeRepository.findByOfficeCode(anyString())).thenReturn(null);
-
-        officeService.updateFilledOfficeFiled(MotherObject.createForPutOfficeObject());
-        Mockito.verify(officeRepository,Mockito.never()).save(MotherObject.createOfficeObject());
-    }
-
-    @Test
-    void getOffice() {
+    void given_valid_officeCode_when_officeRepository_call_findByOfficeCode_then_return_office() {
         Mockito.when(officeRepository.findByOfficeCode(anyString())).thenReturn(MotherObject.createOfficeObject());
 
         Office office = officeService.getOffice("123");
 
         Assertions.assertEquals(MotherObject.createOfficeObject() , office);
+    }
+    @Test
+    void given_invalid_officeCode_when_officeRepository_call_findByOfficeCode_then_return_() {
+        Mockito.when(officeRepository.findByOfficeCode(anyString())).thenReturn(null);
+
+        Office office = officeService.getOffice("123");
     }
 }

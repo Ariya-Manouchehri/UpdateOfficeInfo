@@ -3,7 +3,7 @@ package com.gamelectronics.updateofficeinfo.serviceImpl;
 import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.repository.OfficeRepository;
 import com.gamelectronics.updateofficeinfo.service.OfficeService;
-import com.gamelectronics.updateofficeinfo.utils.MyBeanCopy;
+import com.gamelectronics.updateofficeinfo.utils.OfficeBeanCopy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +33,12 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     @Override
-    public void updateFilledOfficeFiled(Office office) {
+    public void updateNotNullOfficeFiled(Office office) {
         Office officeFinder = officeRepository.findByOfficeCode(office.getOfficeCode());
         if (officeFinder != null) {
-            MyBeanCopy myBeanCopy = new MyBeanCopy();
+            OfficeBeanCopy officeBeanCopy = new OfficeBeanCopy();
             try {
-                myBeanCopy.copyProperties(officeFinder, office);
+                officeBeanCopy.copyProperties(officeFinder, office);
             } catch (Exception e) {
                 System.out.println("error");
             }
