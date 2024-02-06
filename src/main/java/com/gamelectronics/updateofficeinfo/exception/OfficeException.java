@@ -21,7 +21,7 @@ public class OfficeException {
         failureMessage.setArguments(null);
         failureMessage.setType("error");
         return new ResponseEntity<>(new FailureResponse
-                (null,new Messages(new ArrayList<MessageDetails>(Arrays.asList(failureMessage))))
+                (null,new Messages(new ArrayList(Arrays.asList(failureMessage))))
                 ,HttpStatus.NOT_FOUND);
     }
 
@@ -33,7 +33,7 @@ public class OfficeException {
         failureMessage.setArguments(null);
         failureMessage.setType("error");
         return new ResponseEntity<>(new FailureResponse
-                (null,new Messages(new ArrayList<MessageDetails>(Arrays.asList(failureMessage))))
+                (null,new Messages(new ArrayList(Arrays.asList(failureMessage))))
                 ,HttpStatus.UNAUTHORIZED);
     }
 }

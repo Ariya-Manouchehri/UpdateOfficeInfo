@@ -57,23 +57,35 @@ public class OfficeController {
     }
 
     @PutMapping("/{officeCode}")
-    public void updateAllOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateAllOfficeFiledRequest updateAllOfficeFiledRequest) {
-        Office office = updateAllOfficeFiledMapper.convertUpdateAllOfficeFiledToOffice(updateAllOfficeFiledRequest);
+    public void updateAllOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateAllOfficeFiledRequest updateAllOfficeFiledRequest,@RequestHeader HttpHeaders headers) {
+        if (X_SYSTEM_NAME.equals(headers.getFirst("X-SystemName")) && X_SYSTEM_PASSWORD.equals(headers.getFirst("X-SystemPassword"))) {
+            Office office = updateAllOfficeFiledMapper.convertUpdateAllOfficeFiledToOffice(updateAllOfficeFiledRequest);
         office.setOfficeCode(officeCode);
 
         officeService.updateAllOfficeFiled(office);
+        } else {
+            throw new AuthorizationException(headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
+        }
     }
 
     @PatchMapping("/{officeCode}")
-    public void updateNotNullOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateNotNullOfficeFiledRequest updateNotNullOfficeFiledRequest) throws InvocationTargetException, IllegalAccessException {
-        Office office = updateNotNullOfficeFiledMapper.convertUpdateNotNullOfficeFiledToOffice(updateNotNullOfficeFiledRequest);
+    public void updateNotNullOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateNotNullOfficeFiledRequest updateNotNullOfficeFiledRequest,@RequestHeader HttpHeaders headers) throws InvocationTargetException, IllegalAccessException {
+        if (X_SYSTEM_NAME.equals(headers.getFirst("X-SystemName")) && X_SYSTEM_PASSWORD.equals(headers.getFirst("X-SystemPassword"))) {
+            Office office = updateNotNullOfficeFiledMapper.convertUpdateNotNullOfficeFiledToOffice(updateNotNullOfficeFiledRequest);
         office.setOfficeCode(officeCode);
 
         officeService.updateNotNullOfficeFiled(office);
+        } else {
+            throw new AuthorizationException(headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
+        }
     }
 
     @GetMapping("/{officeCode}")
-    public SuccessResponse<Office> getOffice(@PathVariable String officeCode) {
-        return new SuccessResponse<>(officeService.getOffice(officeCode));
+    public SuccessResponse<Office> getOffice(@PathVariable String officeCode,@RequestHeader HttpHeaders headers) {
+        if (X_SYSTEM_NAME.equals(headers.getFirst("X-SystemName")) && X_SYSTEM_PASSWORD.equals(headers.getFirst("X-SystemPassword"))) {
+            return new SuccessResponse<>(officeService.getOffice(officeCode));
+    } else {
+        throw new AuthorizationException(headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
+    }
     }
 }
