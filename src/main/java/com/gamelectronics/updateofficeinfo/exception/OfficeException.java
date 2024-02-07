@@ -36,4 +36,16 @@ public class OfficeException {
                 (null,new Messages(new ArrayList(Arrays.asList(failureMessage))))
                 ,HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(value = SamanExceptionException.class)
+    public ResponseEntity<Object> exception(SamanExceptionException exception) {
+        MessageDetails failureMessage = new MessageDetails();
+        failureMessage.setText(exception.getMessage());
+        failureMessage.setCode("500");
+        failureMessage.setArguments(null);
+        failureMessage.setType("error");
+        return new ResponseEntity<>(new FailureResponse
+                (null,new Messages(new ArrayList(Arrays.asList(failureMessage))))
+                ,HttpStatus.EXPECTATION_FAILED);
+    }
 }
