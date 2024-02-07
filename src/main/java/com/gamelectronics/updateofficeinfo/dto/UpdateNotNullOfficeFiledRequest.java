@@ -2,6 +2,7 @@ package com.gamelectronics.updateofficeinfo.dto;
 
 import com.gamelectronics.updateofficeinfo.utils.OfficeTypeEnum;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -37,7 +38,9 @@ public class UpdateNotNullOfficeFiledRequest {
 
     private String officeStatus;
 
+    @Size(max = 10)
     private String officeLevel;
 
+    @Size(max = 10)
     private String officeLevelType;
 }
