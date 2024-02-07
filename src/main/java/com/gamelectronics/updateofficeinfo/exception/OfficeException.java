@@ -46,6 +46,6 @@ public class OfficeException {
         failureMessage.setType("error");
         return new ResponseEntity<>(new FailureResponse
                 (null,new Messages(new ArrayList(Arrays.asList(failureMessage))))
-                ,HttpStatus.EXPECTATION_FAILED);
+                ,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

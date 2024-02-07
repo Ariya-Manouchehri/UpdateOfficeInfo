@@ -1,6 +1,6 @@
 package com.gamelectronics.updateofficeinfo.serviceImpl;
 
-import com.gamelectronics.updateofficeinfo.dto.samanModel.SamanModel;
+import com.gam.phoenix.samanapi.resource.model.request.CreateNodeRequestModel;
 import com.gamelectronics.updateofficeinfo.exception.NotFoundOfficeException;
 import com.gamelectronics.updateofficeinfo.exception.SamanExceptionException;
 import com.gamelectronics.updateofficeinfo.model.Office;
@@ -18,6 +18,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -80,18 +81,20 @@ public class OfficeServiceImpl implements OfficeService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer your_access_token");
 
-        SamanModel samanModel = new SamanModel();
-        samanModel.setNodeType("mciService");
-        samanModel.setName("ariya-offices");
-        //samanModel.setProperties("propertice", office);
+        CreateNodeRequestModel createNodeRequestModel = new CreateNodeRequestModel();
+        createNodeRequestModel.setNodeType("mci:office");
+        createNodeRequestModel.setName("ariyaOffices");
+        HashMap<String, Object> samanModel = new HashMap<>();
+        samanModel.put("properties", office);
+        createNodeRequestModel.setProperties(samanModel);
 
-        HttpEntity<SamanModel> requestEntity = new HttpEntity<>(samanModel, headers);
+        HttpEntity<CreateNodeRequestModel> requestEntity = new HttpEntity<CreateNodeRequestModel>(createNodeRequestModel, headers);
 
         MultiValueMap<String, Boolean> queryParam = new LinkedMultiValueMap<>();
         queryParam.add("updateIfExists", true);
 
         try {
-            ResponseEntity<String> nodeId = restTemplate.exchange("url",
+            ResponseEntity<String> nodeId = restTemplate.exchange("http://localhost:8081/saman/api/v1/nodes/contents/documents/mci/a-office",
                     HttpMethod.POST,
                     requestEntity,
                     String.class,
@@ -101,7 +104,7 @@ public class OfficeServiceImpl implements OfficeService {
                 throw new SamanExceptionException("import data to saman system is failed.");
             }
         } catch (Exception e) {
-            throw new SamanExceptionException("connection to saman system is failed.");
+            throw new SamanExceptionException("connection to saman system is failed." + e.getMessage());
         }
     }
 }
