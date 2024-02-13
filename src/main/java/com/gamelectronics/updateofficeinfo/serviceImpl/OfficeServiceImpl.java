@@ -8,22 +8,26 @@ import com.gamelectronics.updateofficeinfo.repository.OfficeRepository;
 import com.gamelectronics.updateofficeinfo.service.OfficeService;
 import com.gamelectronics.updateofficeinfo.utils.OfficeBeanCopy;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OfficeServiceImpl implements OfficeService {
     private final OfficeRepository officeRepository;
+
+    @Value("${BASE_PATH}")
+    private String basePath;
 
     public OfficeServiceImpl(OfficeRepository officeRepository) {
         this.officeRepository = officeRepository;
@@ -76,29 +80,27 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     private void setOfficeDataForSamanSystem(Office office) {
+        String url = UriComponentsBuilder.fromUriString(basePath + "/nodes/contents/documents/mci/a-office")
+                .queryParam("updateIfExists", true)
+                .toUriString();
+
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer your_access_token");
 
         CreateNodeRequestModel createNodeRequestModel = new CreateNodeRequestModel();
         createNodeRequestModel.setNodeType("mci:office");
-        createNodeRequestModel.setName("ariyaOffices");
-        HashMap<String, Object> samanModel = new HashMap<>();
-        samanModel.put("properties", office);
-        createNodeRequestModel.setProperties(samanModel);
+        createNodeRequestModel.setName(office.getOfficeCode());
+        createNodeRequestModel.setProperties(setSamanProperties(office));
+
 
         HttpEntity<CreateNodeRequestModel> requestEntity = new HttpEntity<CreateNodeRequestModel>(createNodeRequestModel, headers);
 
-        MultiValueMap<String, Boolean> queryParam = new LinkedMultiValueMap<>();
-        queryParam.add("updateIfExists", true);
-
         try {
-            ResponseEntity<String> nodeId = restTemplate.exchange("http://localhost:8081/saman/api/v1/nodes/contents/documents/mci/a-office",
+            ResponseEntity<String> nodeId = restTemplate.exchange(url,
                     HttpMethod.POST,
                     requestEntity,
-                    String.class,
-                    queryParam
+                    String.class
             );
             if (nodeId.getBody().isEmpty()) {
                 throw new SamanExceptionException("import data to saman system is failed.");
@@ -106,5 +108,31 @@ public class OfficeServiceImpl implements OfficeService {
         } catch (Exception e) {
             throw new SamanExceptionException("connection to saman system is failed." + e.getMessage());
         }
+    }
+
+    private Map<String, Object> setSamanProperties(Office office) {
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("mci:officeCode", office.getOfficeCode());
+        properties.put("mci:officeName", office.getOfficeName());
+        properties.put("mci:provider", office.getProvider());
+        properties.put("mci:officeType", office.getOfficeType());
+        properties.put("mci:managerName", office.getManagerName());
+        properties.put("mci:managerNationalId", office.getManagerNationalId());
+        properties.put("mci:managerMobileNumber", office.getManagerMobileNumber());
+        properties.put("mci:officeMobileNumber", office.getOfficeMobileNumber());
+
+        properties.put("mci:centerId", office.getProvinceId());
+        properties.put("mci:centerName", office.getProvinceName());
+        properties.put("mci:orgId", office.getRegionId());
+        properties.put("mci:orgName", office.getRegionName());
+
+        properties.put("mci:officeAddress", office.getOfficeAddress());
+        properties.put("mci:officePostalCode", office.getOfficePostalCode());
+        properties.put("mci:officeStatus", office.getOfficeStatus());
+        properties.put("mci:officeLevel", office.getOfficeLevel());
+        properties.put("mci:officeLevelType", office.getOfficeLevelType());
+
+
+        return properties;
     }
 }
