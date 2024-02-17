@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class OfficeServiceImpl implements OfficeService {
@@ -45,11 +46,11 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     @Transactional(rollbackOn = SamanExceptionException.class)
     public void updateAllOfficeFiled(Office office) throws NotFoundOfficeException {
-        Office officeFinder = officeRepository.findByOfficeCode(office.getOfficeCode());
-        if (officeFinder != null) {
-            officeFinder = office;
-            officeRepository.save(officeFinder);
-            setOfficeDataForSamanSystem(officeFinder);
+        Optional<Office> foundOffice = officeRepository.findByOfficeCode(office.getOfficeCode());
+        if (foundOffice.isPresent()) {
+            foundOffice = Optional.of(office);
+            officeRepository.save(foundOffice.get());
+            setOfficeDataForSamanSystem(foundOffice.get());
         } else {
             throw new NotFoundOfficeException("office " + office.getOfficeCode() + " notFound.");
         }
@@ -58,12 +59,13 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     @Transactional(rollbackOn = SamanExceptionException.class)
     public void updateNotNullOfficeFiled(Office office) throws InvocationTargetException, IllegalAccessException {
-        Office officeFinder = officeRepository.findByOfficeCode(office.getOfficeCode());
-        if (officeFinder != null) {
+        Optional<Office> foundOffice = officeRepository.findByOfficeCode(office.getOfficeCode());
+        if (foundOffice.isPresent()) {
+            //todo : use mapstruct
             OfficeBeanCopy officeBeanCopy = new OfficeBeanCopy();
-            officeBeanCopy.copyProperties(officeFinder, office);
-            officeRepository.save(officeFinder);
-            setOfficeDataForSamanSystem(officeFinder);
+            officeBeanCopy.copyProperties(foundOffice.get(), office);
+            officeRepository.save(foundOffice.get());
+            setOfficeDataForSamanSystem(foundOffice.get());
         } else {
             throw new NotFoundOfficeException("office " + office.getOfficeCode() + " notFound.");
         }
@@ -71,9 +73,9 @@ public class OfficeServiceImpl implements OfficeService {
 
     @Override
     public Office getOffice(String officeCode) {
-        Office officeFinder = officeRepository.findByOfficeCode(officeCode);
-        if (officeFinder != null) {
-            return officeFinder;
+        Optional<Office> office = officeRepository.findByOfficeCode(officeCode);
+        if (office.isPresent()) {
+            return office.get();
         } else {
             throw new NotFoundOfficeException("office " + officeCode + " notFound.");
         }
@@ -95,18 +97,18 @@ public class OfficeServiceImpl implements OfficeService {
 
 
         HttpEntity<CreateNodeRequestModel> requestEntity = new HttpEntity<CreateNodeRequestModel>(createNodeRequestModel, headers);
-
+        ResponseEntity<String> nodeId ;
         try {
-            ResponseEntity<String> nodeId = restTemplate.exchange(url,
+            nodeId =  restTemplate.exchange(url,
                     HttpMethod.POST,
                     requestEntity,
                     String.class
             );
-            if (nodeId.getBody().isEmpty()) {
-                throw new SamanExceptionException("import data to saman system is failed.");
-            }
         } catch (Exception e) {
             throw new SamanExceptionException("connection to saman system is failed." + e.getMessage());
+        }
+        if (nodeId.getBody().isEmpty()) {
+            throw new SamanExceptionException("import data to saman system is failed.");
         }
     }
 
