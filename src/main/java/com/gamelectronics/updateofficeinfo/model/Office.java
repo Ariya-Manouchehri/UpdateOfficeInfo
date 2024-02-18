@@ -1,5 +1,6 @@
 package com.gamelectronics.updateofficeinfo.model;
 
+import com.gam.phoenix.spring.commons.rest.model.response.RESTResponse;
 import com.gamelectronics.updateofficeinfo.utils.OfficeTypeEnum;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,7 +10,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Table(name = "office")
 @Audited
-public class Office {
+public class Office implements RESTResponse {
 
     @Id
     @Column(name = "office_code", unique = true)

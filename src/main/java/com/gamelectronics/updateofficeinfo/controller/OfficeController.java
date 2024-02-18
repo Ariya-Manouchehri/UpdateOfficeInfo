@@ -1,7 +1,10 @@
 package com.gamelectronics.updateofficeinfo.controller;
 
-import com.gamelectronics.updateofficeinfo.dto.*;
-import com.gamelectronics.updateofficeinfo.exception.AuthorizationException;
+import com.gam.phoenix.spring.commons.service.NonPersistenceServiceException;
+import com.gamelectronics.updateofficeinfo.dto.RegisterOfficeRequest;
+import com.gamelectronics.updateofficeinfo.dto.RegisterOfficeResponse;
+import com.gamelectronics.updateofficeinfo.dto.UpdateAllOfficeFiledRequest;
+import com.gamelectronics.updateofficeinfo.dto.UpdateNotNullOfficeFiledRequest;
 import com.gamelectronics.updateofficeinfo.mapper.RegisterOfficeMapper;
 import com.gamelectronics.updateofficeinfo.mapper.UpdateAllOfficeFiledMapper;
 import com.gamelectronics.updateofficeinfo.mapper.UpdateNotNullOfficeFiledMapper;
@@ -56,7 +59,7 @@ public class OfficeController {
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemName", content = @Content(schema = @Schema(type = "string")))
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemPassword", content = @Content(schema = @Schema(type = "string")))
     @PostMapping
-    public SuccessResponse<RegisterOfficeResponse> registerOffice(@Valid @RequestBody RegisterOfficeRequest registerOfficeRequest, @RequestHeader HttpHeaders headers) {
+    public RegisterOfficeResponse registerOffice(@Valid @RequestBody RegisterOfficeRequest registerOfficeRequest, @RequestHeader HttpHeaders headers) throws NonPersistenceServiceException {
         if (X_SYSTEM_NAME.equals(headers.getFirst("X-SystemName")) && X_SYSTEM_PASSWORD.equals(headers.getFirst("X-SystemPassword"))) {
             RegisterOfficeResponse registerOfficeResponse = new RegisterOfficeResponse();
             ArrayList<Office> offices = new ArrayList<>(registerOfficeRequest.getOfficesDetails().size());
@@ -65,9 +68,9 @@ public class OfficeController {
             offices.forEach(office -> office.setProvider(registerOfficeRequest.getProvider()));
 
             registerOfficeResponse.setOfficesCount(officeService.registerOffice(offices).size());
-            return new SuccessResponse<>(registerOfficeResponse);
+            return registerOfficeResponse;
         } else {
-            throw new AuthorizationException(headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
+            throw new NonPersistenceServiceException("401", headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
         }
     }
 
@@ -81,14 +84,14 @@ public class OfficeController {
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemName", content = @Content(schema = @Schema(type = "string")))
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemPassword", content = @Content(schema = @Schema(type = "string")))
     @PutMapping("/{officeCode}")
-    public void updateAllOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateAllOfficeFiledRequest updateAllOfficeFiledRequest, @RequestHeader HttpHeaders headers) {
+    public void updateAllOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateAllOfficeFiledRequest updateAllOfficeFiledRequest, @RequestHeader HttpHeaders headers) throws NonPersistenceServiceException {
         if (X_SYSTEM_NAME.equals(headers.getFirst("X-SystemName")) && X_SYSTEM_PASSWORD.equals(headers.getFirst("X-SystemPassword"))) {
             Office office = updateAllOfficeFiledMapper.convertUpdateAllOfficeFiledToOffice(updateAllOfficeFiledRequest);
             office.setOfficeCode(officeCode);
 
             officeService.updateAllOfficeFiled(office);
         } else {
-            throw new AuthorizationException(headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
+            throw new NonPersistenceServiceException("401", headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
         }
     }
 
@@ -102,14 +105,14 @@ public class OfficeController {
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemName", content = @Content(schema = @Schema(type = "string")))
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemPassword", content = @Content(schema = @Schema(type = "string")))
     @PatchMapping("/{officeCode}")
-    public void updateNotNullOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateNotNullOfficeFiledRequest updateNotNullOfficeFiledRequest, @RequestHeader HttpHeaders headers) throws InvocationTargetException, IllegalAccessException {
+    public void updateNotNullOfficeFiled(@PathVariable String officeCode, @Valid @RequestBody UpdateNotNullOfficeFiledRequest updateNotNullOfficeFiledRequest, @RequestHeader HttpHeaders headers) throws NonPersistenceServiceException, InvocationTargetException, IllegalAccessException {
         if (X_SYSTEM_NAME.equals(headers.getFirst("X-SystemName")) && X_SYSTEM_PASSWORD.equals(headers.getFirst("X-SystemPassword"))) {
             Office office = updateNotNullOfficeFiledMapper.convertUpdateNotNullOfficeFiledToOffice(updateNotNullOfficeFiledRequest);
             office.setOfficeCode(officeCode);
 
             officeService.updateNotNullOfficeFiled(office);
         } else {
-            throw new AuthorizationException(headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
+            throw new NonPersistenceServiceException("401", headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
         }
     }
 
@@ -123,11 +126,11 @@ public class OfficeController {
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemName", content = @Content(schema = @Schema(type = "string")))
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemPassword", content = @Content(schema = @Schema(type = "string")))
     @GetMapping("/{officeCode}")
-    public SuccessResponse<Office> getOffice(@PathVariable String officeCode, @RequestHeader HttpHeaders headers) {
+    public Office getOffice(@PathVariable String officeCode, @RequestHeader HttpHeaders headers) throws NonPersistenceServiceException {
         if (X_SYSTEM_NAME.equals(headers.getFirst("X-SystemName")) && X_SYSTEM_PASSWORD.equals(headers.getFirst("X-SystemPassword"))) {
-            return new SuccessResponse<>(officeService.getOffice(officeCode));
+            return officeService.getOffice(officeCode);
         } else {
-            throw new AuthorizationException(headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
+            throw new NonPersistenceServiceException("401", headers.getFirst("X-SystemName") + " " + headers.getFirst("X-SystemPassword") + " unAuthorized.");
         }
     }
 }

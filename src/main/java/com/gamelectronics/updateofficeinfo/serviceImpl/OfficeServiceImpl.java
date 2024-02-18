@@ -1,8 +1,7 @@
 package com.gamelectronics.updateofficeinfo.serviceImpl;
 
 import com.gam.phoenix.samanapi.resource.model.request.CreateNodeRequestModel;
-import com.gamelectronics.updateofficeinfo.exception.NotFoundOfficeException;
-import com.gamelectronics.updateofficeinfo.exception.SamanExceptionException;
+import com.gam.phoenix.spring.commons.service.NonPersistenceServiceException;
 import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.repository.OfficeRepository;
 import com.gamelectronics.updateofficeinfo.service.OfficeService;
@@ -35,8 +34,8 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     @Override
-    @Transactional(rollbackOn = SamanExceptionException.class)
-    public List<Office> registerOffice(List<Office> offices) {
+    @Transactional(rollbackOn = NonPersistenceServiceException.class)
+    public List<Office> registerOffice(List<Office> offices) throws NonPersistenceServiceException {
         for (Office item : offices) {
             setOfficeDataForSamanSystem(item);
         }
@@ -44,21 +43,21 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     @Override
-    @Transactional(rollbackOn = SamanExceptionException.class)
-    public void updateAllOfficeFiled(Office office) throws NotFoundOfficeException {
+    @Transactional(rollbackOn = NonPersistenceServiceException.class)
+    public void updateAllOfficeFiled(Office office) throws NonPersistenceServiceException {
         Optional<Office> foundOffice = officeRepository.findByOfficeCode(office.getOfficeCode());
         if (foundOffice.isPresent()) {
             foundOffice = Optional.of(office);
             officeRepository.save(foundOffice.get());
             setOfficeDataForSamanSystem(foundOffice.get());
         } else {
-            throw new NotFoundOfficeException("office " + office.getOfficeCode() + " notFound.");
+            throw new NonPersistenceServiceException("404", "office " + office.getOfficeCode() + " notFound.");
         }
     }
 
     @Override
-    @Transactional(rollbackOn = SamanExceptionException.class)
-    public void updateNotNullOfficeFiled(Office office) throws InvocationTargetException, IllegalAccessException {
+    @Transactional(rollbackOn = NonPersistenceServiceException.class)
+    public void updateNotNullOfficeFiled(Office office) throws InvocationTargetException, IllegalAccessException, NonPersistenceServiceException {
         Optional<Office> foundOffice = officeRepository.findByOfficeCode(office.getOfficeCode());
         if (foundOffice.isPresent()) {
             //todo : use mapstruct
@@ -67,21 +66,21 @@ public class OfficeServiceImpl implements OfficeService {
             officeRepository.save(foundOffice.get());
             setOfficeDataForSamanSystem(foundOffice.get());
         } else {
-            throw new NotFoundOfficeException("office " + office.getOfficeCode() + " notFound.");
+            throw new NonPersistenceServiceException("404", "office " + office.getOfficeCode() + " notFound.");
         }
     }
 
     @Override
-    public Office getOffice(String officeCode) {
+    public Office getOffice(String officeCode) throws NonPersistenceServiceException {
         Optional<Office> office = officeRepository.findByOfficeCode(officeCode);
         if (office.isPresent()) {
             return office.get();
         } else {
-            throw new NotFoundOfficeException("office " + officeCode + " notFound.");
+            throw new NonPersistenceServiceException("404", "office " + officeCode + " notFound.");
         }
     }
 
-    private void setOfficeDataForSamanSystem(Office office) {
+    private void setOfficeDataForSamanSystem(Office office) throws NonPersistenceServiceException {
         String url = UriComponentsBuilder.fromUriString(basePath + "/nodes/contents/documents/mci/a-office")
                 .queryParam("updateIfExists", true)
                 .toUriString();
@@ -97,18 +96,18 @@ public class OfficeServiceImpl implements OfficeService {
 
 
         HttpEntity<CreateNodeRequestModel> requestEntity = new HttpEntity<CreateNodeRequestModel>(createNodeRequestModel, headers);
-        ResponseEntity<String> nodeId ;
+        ResponseEntity<String> nodeId;
         try {
-            nodeId =  restTemplate.exchange(url,
+            nodeId = restTemplate.exchange(url,
                     HttpMethod.POST,
                     requestEntity,
                     String.class
             );
         } catch (Exception e) {
-            throw new SamanExceptionException("connection to saman system is failed." + e.getMessage());
+            throw new NonPersistenceServiceException("500", "connection to saman system is failed." + e.getMessage());
         }
         if (nodeId.getBody().isEmpty()) {
-            throw new SamanExceptionException("import data to saman system is failed.");
+            throw new NonPersistenceServiceException("500", "import data to saman system is failed.");
         }
     }
 
