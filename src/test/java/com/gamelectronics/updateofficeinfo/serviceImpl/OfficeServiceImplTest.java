@@ -1,7 +1,7 @@
 package com.gamelectronics.updateofficeinfo.serviceImpl;
 
 import com.gam.phoenix.spring.commons.service.NonPersistenceServiceException;
-import com.gamelectronics.updateofficeinfo.MotherObject;
+import com.gamelectronics.updateofficeinfo.model.MotherObject;
 import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.repository.OfficeRepository;
 import com.gamelectronics.updateofficeinfo.utils.ImportDataToSaman;

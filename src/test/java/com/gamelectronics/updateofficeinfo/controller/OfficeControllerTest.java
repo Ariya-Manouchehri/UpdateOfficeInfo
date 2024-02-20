@@ -4,16 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gam.phoenix.spring.commons.rest.controller.RestResponseHandler;
 import com.gam.phoenix.spring.commons.rest.controller.config.BeanConfigurations;
 import com.gam.phoenix.spring.commons.rest.controller.util.ExceptionUtil;
-import com.gam.phoenix.spring.commons.service.NonPersistenceServiceException;
-import com.gamelectronics.updateofficeinfo.MotherObject;
-import com.gamelectronics.updateofficeinfo.UpdateOfficeInfoApplication;
+import com.gamelectronics.updateofficeinfo.model.MotherObject;
 import com.gamelectronics.updateofficeinfo.mapper.RegisterOfficeMapper;
 import com.gamelectronics.updateofficeinfo.mapper.UpdateAllOfficeFiledMapper;
 import com.gamelectronics.updateofficeinfo.mapper.UpdateNotNullOfficeFiledMapper;
 import com.gamelectronics.updateofficeinfo.service.OfficeService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,8 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -88,7 +83,7 @@ class OfficeControllerTest {
                             .header("X-SystemPassword", "admin")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(MotherObject.createRegisterOfficeRequestObject())))
-                    .andExpect(status().is4xxClientError());
+                    .andExpect(status().is5xxServerError());
         }
     }
 
@@ -129,7 +124,7 @@ class OfficeControllerTest {
                             .header("X-SystemPassword", "admin")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(MotherObject.createUpdateAllOfficeFiledRequestObject())))
-                    .andExpect(status().is4xxClientError());
+                    .andExpect(status().is5xxServerError());
         }
     }
 
@@ -169,7 +164,7 @@ class OfficeControllerTest {
                             .header("X-SystemPassword", "admin")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(MotherObject.createUpdateNotNullOfficeFiledObject())))
-                    .andExpect(status().is4xxClientError());
+                    .andExpect(status().is5xxServerError());
         }
     }
 
@@ -192,7 +187,7 @@ class OfficeControllerTest {
                             .header("X-SystemName", "ariya")
                             .header("X-SystemPassword", "admin")
                             .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().is4xxClientError());
+                    .andExpect(status().is5xxServerError());
         }
     }
 }

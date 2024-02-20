@@ -1,4 +1,4 @@
-package com.gamelectronics.updateofficeinfo;
+package com.gamelectronics.updateofficeinfo.model;
 
 import com.gamelectronics.updateofficeinfo.dto.OfficesDetail;
 import com.gamelectronics.updateofficeinfo.dto.RegisterOfficeRequest;
