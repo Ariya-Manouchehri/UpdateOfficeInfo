@@ -1,4 +1,4 @@
-package com.gamelectronics.updateofficeinfo.serviceImpl;
+package com.gamelectronics.updateofficeinfo.service;
 
 import com.gam.phoenix.spring.commons.service.NonPersistenceServiceException;
 import com.gamelectronics.updateofficeinfo.model.MotherObject;
@@ -21,10 +21,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
-class OfficeServiceImplTest {
+class OfficeServiceTest {
 
     @InjectMocks
-    OfficeServiceImpl officeService;
+    OfficeService officeService;
 
     @Mock
     OfficeRepository officeRepository;
