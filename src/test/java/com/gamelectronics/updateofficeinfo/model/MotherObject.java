@@ -4,7 +4,6 @@ import com.gamelectronics.updateofficeinfo.dto.OfficesDetail;
 import com.gamelectronics.updateofficeinfo.dto.RegisterOfficeRequest;
 import com.gamelectronics.updateofficeinfo.dto.UpdateAllOfficeFiledRequest;
 import com.gamelectronics.updateofficeinfo.dto.UpdateNotNullOfficeFiledRequest;
-import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.utils.OfficeTypeEnum;
 
 import java.util.ArrayList;

@@ -46,7 +46,7 @@ public class ImportDataToSaman {
         } catch (Exception e) {
             throw new NonPersistenceServiceException("500", "connection to saman system is failed." + e.getMessage());
         }
-        if (nodeId.getBody().isEmpty()) {
+        if (!nodeId.hasBody()) {
             throw new NonPersistenceServiceException("500", "import data to saman system is failed.");
         }
     }

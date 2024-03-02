@@ -1,5 +1,6 @@
 package com.gamelectronics.updateofficeinfo.mapper;
 
+import com.gamelectronics.updateofficeinfo.dto.OfficeDto;
 import com.gamelectronics.updateofficeinfo.dto.RegisterOfficeResponse;
 import com.gamelectronics.updateofficeinfo.model.Office;
 
@@ -11,7 +12,7 @@ public class Mapper {
         return registerOfficeResponse;
     }
 
-    public static Office setOfficeCodeForOffice(Office office,String officeCode){
+    public static Office setOfficeCodeForOffice(Office office, String officeCode){
         office.setOfficeCode(officeCode);
         return office;
     }

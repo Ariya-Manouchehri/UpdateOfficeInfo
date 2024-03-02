@@ -1,14 +1,8 @@
 package com.gamelectronics.updateofficeinfo.controller;
 
 import com.gam.phoenix.spring.commons.service.NonPersistenceServiceException;
-import com.gamelectronics.updateofficeinfo.dto.RegisterOfficeRequest;
-import com.gamelectronics.updateofficeinfo.dto.RegisterOfficeResponse;
-import com.gamelectronics.updateofficeinfo.dto.UpdateAllOfficeFiledRequest;
-import com.gamelectronics.updateofficeinfo.dto.UpdateNotNullOfficeFiledRequest;
-import com.gamelectronics.updateofficeinfo.mapper.RegisterOfficeMapper;
-import com.gamelectronics.updateofficeinfo.mapper.Mapper;
-import com.gamelectronics.updateofficeinfo.mapper.UpdateAllOfficeFiledMapper;
-import com.gamelectronics.updateofficeinfo.mapper.UpdateNotNullOfficeFiledMapper;
+import com.gamelectronics.updateofficeinfo.dto.*;
+import com.gamelectronics.updateofficeinfo.mapper.*;
 import com.gamelectronics.updateofficeinfo.model.Office;
 import com.gamelectronics.updateofficeinfo.service.OfficeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +35,7 @@ public class OfficeController {
     RegisterOfficeMapper registerOfficeMapper;
     UpdateAllOfficeFiledMapper updateAllOfficeFiledMapper;
     UpdateNotNullOfficeFiledMapper updateNotNullOfficeFiledMapper;
+    OfficeDtoMapper officeDtoMapper;
 
     public OfficeController(OfficeService officeService, RegisterOfficeMapper registerOfficeMapper,
                             UpdateAllOfficeFiledMapper updateAllOfficeFiledMapper,
@@ -116,9 +111,9 @@ public class OfficeController {
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemName", content = @Content(schema = @Schema(type = "string")))
     @Parameter(in = ParameterIn.HEADER, name = "X-SystemPassword", content = @Content(schema = @Schema(type = "string")))
     @GetMapping("/{officeCode}")
-    public Office getOffice(@PathVariable String officeCode, @RequestHeader HttpHeaders headers) throws NonPersistenceServiceException {
+    public OfficeDto getOffice(@PathVariable String officeCode, @RequestHeader HttpHeaders headers) throws NonPersistenceServiceException {
         checkAuthentication(headers.getFirst("X-SystemName"), headers.getFirst("X-SystemPassword"));
-        return officeService.getOffice(officeCode);
+        return officeDtoMapper.convertOfficeToOfficeDto(officeService.getOffice(officeCode));
     }
 
     private void checkAuthentication(String systemName, String systemPassword) throws NonPersistenceServiceException {

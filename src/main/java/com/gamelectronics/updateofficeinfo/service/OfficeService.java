@@ -34,8 +34,7 @@ public class OfficeService {
     public void updateAllOfficeFiled(Office office) throws NonPersistenceServiceException {
         Optional<Office> foundOffice = officeRepository.findByOfficeCode(office.getOfficeCode());
         if (foundOffice.isPresent()) {
-            foundOffice = Optional.of(office);
-            officeRepository.save(foundOffice.get());
+            officeRepository.save(office);
             importDataToSaman.setOfficeDataForSamanSystem(foundOffice.get());
         } else {
             throw new NonPersistenceServiceException("404", "office " + office.getOfficeCode() + " notFound.");
